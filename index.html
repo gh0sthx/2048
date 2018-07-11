@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport"
+	content=" width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<title>Hanxiao‘s 2048</title>
+	<link rel="stylesheet" type="text/css" href="./css/2048.css"/>
+	<link rel="stylesheet" href="./jqm/jquery.mobile.flatui.css" />
+	<script type="text/javascript" src="./jqm/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="./jqm/jquery.mobile-1.4.0-rc.1.js"></script>
+	<script type="text/javascript" src="./js/support2048.js"></script>
+	<script type="text/javascript" src="./js/showanimation2048.js"></script>
+	<script type="text/javascript" src="./js/main2048.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		#backgroundDiv {height:100%; width:100%; background-color:#000000;}
+	</style>
+	<script type="text/javascript">
+	    //页面初始化
+	    $(document).bind("mobileinit", function(){
+	    	$.extend($.mobile , {
+	    		defaultPageTransition: 'flow',
+	    		defaultDialogTransition: 'flip'
+	    	});
+	    });
+		$.mobile.buttonMarkup.hoverDelay = "false";//按钮延迟问题的解决
+		$(document).ready(function(){
+			$("#newGameBtn").click(function(){
+				canScroll = false;
+				newgame();
+			});
+
+			$("#continueGameBtn").click(function(){
+				canScroll = false;
+			});
+
+			$(".backHome").click(function(){
+				canScroll = true;
+			});
+
+			$("#uploadBtn").click(function(){
+				getCharts();
+			});
+		});
+
+		//显示等待进度框
+		function showProgressDialog() {
+			$.mobile.loadingMessageTextVisible = true;
+			$.mobile.showPageLoadingMsg('0. 0', "Please wait...");
+		}
+		//隐藏等待进度框
+		function cancelProgressDialog() {
+			$.mobile.hidePageLoadingMsg();
+		}
+
+		function getCharts(){
+
+			showProgressDialog();
+			$.get("server2048.php?playerName=Devis1&time=1999-11-11&bestPosition=11经理&bestSalary=11123&comment=hah1111ahaha", function(data){
+				parseData(data);
+				cancelProgressDialog();
+			});
+		}
+		//解析结果
+		function parseData(data) {
+
+			var array = new Array();
+			array = data.split("-=^=-", 10);
+			for(var i=0; i<array.length; i++){
+				var arr = array[i].split("=&=");
+				$("#li"+i).text((i+1)+" "+arr[0]+" "+arr[2]+" "+arr[3]+"万年");
+			}
+
+			if(data == '数据获取失败，请重新获取！'){
+				return data;
+			}else{
+				return data;
+			}
+		}
+
+	</script>
+	<!-- 我的主页 -->
+	<div data-role="page" id="pageHome" data-theme="b">
+		<div data-role="header"  data-theme="b" data-tap-toggle="false" data-position="fixed" data-id="myheader">
+			<h1>2048(升职版)</h1>
+		</div>
+
+		<div data-role="content" >
+
+			<a id="newGameBtn" href="#page2048" data-role="button" data-transition="slide" data-corners="false" data-theme="c" >新游戏</a>
+			<a id="continueGameBtn" href="#page2048" data-role="button" data-transition="slide" data-corners="false" data-theme="c">继续游戏</a>
+			<a id="chartsBtn" href="#pageCharts" data-role="button" data-transition="flow" data-corners="false" data-theme="c">排行榜</a>
+			<a id="helpBtn" href="#pageHelp" data-role="button" data-transition="slide" data-corners="false" data-theme="c">帮助</a>
+			<a id="uploadBtn" data-role="button" data-transition="slide" data-corners="false" data-theme="c">上传成绩</a>
+
+		</div>
+
+		<div data-role="footer" data-tap-toggle="false" data-theme="b" data-position="fixed" data-id="myfooter">
+			<h1>reform by hanxiao</h1>
+		</div>
+	</div>
+
+	<!-- 2048(升职版) -->
+	<div data-role="page" id="page2048" data-theme="b">
+		<div data-role="header" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<a class="backHome" href="#pageHome" data-role="button" data-icon="home" data-transition="slide" data-direction="reverse">首页</a>
+			<h1 id="title"></h1>
+		</div>
+
+		<div data-role="content">
+			<a href="javascript:newgame();" id="newgamebutton">新工作</a>
+			<p id="scoreText">你是<span id="position">小白</span>--年薪: <span id="score">0</span> 万</p>
+			<div id="grid-container">
+				<div class="grid-cell" id="grid-cell-0-0"></div>
+				<div class="grid-cell" id="grid-cell-0-1"></div>
+				<div class="grid-cell" id="grid-cell-0-2"></div>
+				<div class="grid-cell" id="grid-cell-0-3"></div>
+
+				<div class="grid-cell" id="grid-cell-1-0"></div>
+				<div class="grid-cell" id="grid-cell-1-1"></div>
+				<div class="grid-cell" id="grid-cell-1-2"></div>
+				<div class="grid-cell" id="grid-cell-1-3"></div>
+
+				<div class="grid-cell" id="grid-cell-2-0"></div>
+				<div class="grid-cell" id="grid-cell-2-1"></div>
+				<div class="grid-cell" id="grid-cell-2-2"></div>
+				<div class="grid-cell" id="grid-cell-2-3"></div>
+
+				<div class="grid-cell" id="grid-cell-3-0"></div>
+				<div class="grid-cell" id="grid-cell-3-1"></div>
+				<div class="grid-cell" id="grid-cell-3-2"></div>
+				<div class="grid-cell" id="grid-cell-3-3"></div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<h1>reform by hanxiao</h1>
+		</div>
+	</div>
+
+	<!-- 排行榜 -->
+	<div data-role="page" id="pageCharts" data-theme="b">
+		<div data-role="header" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<a class="backHome" href="#pageHome" data-role="button" data-icon="home" data-transition="flow" data-direction="reverse">首页</a>
+			<h1 id="title">排行榜</h1>
+		</div>
+
+		<div data-role="content" id="chartsDiv" data-theme="d">
+			<ul data-role="listview" data-inset="true">
+				<li><a href="#" id="li0">Diana</a></li>
+				<li><a href="#" id="li1">Adele</a></li>
+				<li><a href="#" id="li2">Agnes</a></li>
+				<li><a href="#" id="li3">Albert</a></li>
+				<li><a href="#" id="li4">Billy</a></li>
+				<li><a href="#" id="li5">Bob</a></li>
+				<li><a href="#" id="li6">Calvin</a></li>
+				<li><a href="#" id="li7">Cameron</a></li>
+				<li><a href="#" id="li8">Chloe</a></li>
+				<li><a href="#" id="li9">Christina</a></li>
+			</ul>
+
+		</div>
+
+		<div data-role="footer" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<h1>reform by hanxiao</h1>
+		</div>
+	</div>
+
+	<!-- 帮助 -->
+	<div data-role="page" id="pageHelp" data-theme="b">
+		<div data-role="header" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<a class="backHome" href="#pageHome" data-role="button" data-icon="home" data-transition="slide" data-direction="reverse">首页</a>
+			<h1 id="title">帮助</h1>
+		</div>
+
+		<div data-role="content">
+			<p id="charts">呵呵！ 这么简单的游戏，没啥好帮助的。给你个诀窍，尽量把大的职位放到角落去。在一些配置不是特别好的机子上完可能会有点卡，别见怪，毕竟这是网页游戏~~~~</p>
+
+		</div>
+
+		<div data-role="footer" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<h1>reform by hanxiao</h1>
+		</div>
+	</div>
+
+	<!-- 上传成绩 -->
+	<div data-role="page" id="pageUpload" data-theme="b">
+		<div data-role="header" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<a class="backHome" href="#pageHome" data-role="button" data-icon="home" data-transition="slide" data-direction="reverse">首页</a>
+			<h1 id="title">上传成绩</h1>
+		</div>
+
+		<div data-role="content">
+			<form action="server2048.php" method="post">
+				<input type=text name="playerName" value="昵称呵呵"/><br/>
+				<input type=text name="time" value="1999-12-08"/><br/>
+				<input type=text name="bestPosition" value="董事长"/><br/>
+				<input type=text name="bestSalary" value=1000/><br/>
+				<input type=text name="comment" value="评论"/><br/>
+				<input type=submit name="submit" value="提交" >
+			</form>
+
+		</div>
+
+		<div data-role="footer" data-tap-toggle="false" data-position="fixed" data-theme="b">
+			<h1>reform by hanxiao</h1>
+		</div>
+	</div>
+
+	<!-- 黑色背景 -->
+	<div id="backgroundDiv">
+
+	</body>
+	</html>
